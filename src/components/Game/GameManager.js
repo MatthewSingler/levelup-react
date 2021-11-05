@@ -1,3 +1,5 @@
+
+
 export const getGames = () => {
     return fetch("http://localhost:8000/games", {
         headers: {
@@ -8,15 +10,18 @@ export const getGames = () => {
 }
 export const createGame = (game) => {
     return fetch("http://localhost:8000/games", {
+        method: "POST",
         headers: {
-            "Authorization": `Token ${localStorage.getItem("lu_token")}`
-        }
+            "Authorization": `Token ${localStorage.getItem("lu_token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(game)
     })
         .then(response => response.json())
 }
 
 export const getGameTypes = () => {
-    return fetch("http://localhost:8000/games?_type", {
+    return fetch("http://localhost:8000/gamestypes", {
         headers: {
             "Authorization": `Token ${localStorage.getItem("lu_token")}`
         }
