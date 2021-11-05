@@ -12,6 +12,21 @@ export const GameForm = () => {
         the properties of this state variable, you need to
         provide some default values.
     */
+    useEffect(() => {
+    getGameTypes().then(typesData => setGameTypes(typesData))
+    })
+
+    const handleOnChange = (event) => {
+        const copy = { ...game }
+        copyGame[event.target.name] = event.target.value
+        setState(copyGame)
+    }
+    const saveGame = (event) => {
+        event.preventDefault()
+        createGame(game).then(() => {
+            history.push('/')
+        })
+    }
 
     const [currentGame, setCurrentGame] = useState({
         skillLevel: 1,
@@ -20,10 +35,6 @@ export const GameForm = () => {
         maker: "",
         gameTypeId: 0
     })
-
-    useEffect(() => {
-        // TODO: Get the game types, then set the state
-    }, [])
 
     /*
         REFACTOR CHALLENGE START
@@ -68,16 +79,24 @@ export const GameForm = () => {
 
     return (
         <form className="gameForm">
+            <label>Title</label>
+            <input type="text" name="title" onChange={(event) => handleOnChange(event)}></input>
+            <label>Maker</label>
+            <input type="text" name="maker" onChange={(event) => handleOnChange(event)}></input>
+            <label>Number of Players</label>
+            <input type="number" name="numberOfPlayers" onChange={(event) => handleOnChange(event)}></input>
+            <label>Skill Level</label>
+            <input type="number" name="skillLevel" onChange={(event) => handleOnChange(event)}></input>
+            <label>Game Type</label>
+            <select name="gameTypeId" onChange={(event) => handleOnChange(event)}>
+                <option value="0">Select a game type</option>
+                {
+                    gameTypes.map(type => <option value={type.id}>{type.label}</option>)
+                }
+            </select>
+            <button onClick={(event) => saveGame(event)}>Save Game</button>
             <h2 className="gameForm__title">Register New Game</h2>
-            <fieldset>
-                <div className="form-group">
-                    <label htmlFor="title">Title: </label>
-                    <input type="text" name="title" required autoFocus className="form-control"
-                        value={currentGame.title}
-                        onChange={changeGameTitleState}
-                    />
-                </div>
-            </fieldset>
+
 
             {/* TODO: create the rest of the input fields */}
 
