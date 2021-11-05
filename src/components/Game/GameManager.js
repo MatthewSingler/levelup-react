@@ -1,5 +1,3 @@
-
-
 export const getGames = () => {
     return fetch("http://localhost:8000/games", {
         headers: {
@@ -20,7 +18,7 @@ export const createGame = (game) => {
 }
 
 export const getGameTypes = () => {
-    return fetch("http://localhost:8000/gamestypes", {
+    return fetch("http://localhost:8000/gametypes", {
         headers: {
             "Authorization": `Token ${localStorage.getItem("lu_token")}`
         }
