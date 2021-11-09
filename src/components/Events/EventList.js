@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react"
-import { getEvents, joinEvent } from "./EventManager"
+import { getEvents, joinEvent, leaveEvent } from "./EventManager"
 import { useHistory } from "react-router"
 
 export const EventList = (props) => {
     const [events, setEvents] = useState([])
     const history = useHistory()
 
-    useEffect(() => {
+    /*useEffect(() => {
         getEvents().then(data => setEvents(data))
-    }, [])
+    }, [])*/
     const eventFetcher = () => {
         getEvents()
             .then(data => setEvents(data))
@@ -20,8 +20,6 @@ export const EventList = (props) => {
 
     return (
         <article className="events">
-            <button className="btn btn-2 btn-sep icon-create"
-                onClick={() => { history.push({ pathname: "/event/new" }) }}>Create Event</button>
             {
                 events.map(event => {
                     return <section key={`event--${event.id}`} className="event">
@@ -33,14 +31,15 @@ export const EventList = (props) => {
                         <div className="event__time">at {event.time}</div>
                         <br>
                         </br>
-                        <button className="btn btn-2"
-                            onClick={
-                                () => {
-                                    joinEvent(event.id)
-                                        .then(() => eventFetcher())
-                                }
-                            }
-                        >Join</button>
+                        {
+                            event.joined
+                                ? <button className="btn btn-3"
+                                    onClick={() => leaveEvent(event.id).then(() => eventFetcher())}
+                                >Leave</button>
+                                : <button className="btn btn-2"
+                                    onClick={() => joinEvent(event.id).then(() => eventFetcher())}
+                                >Join</button>
+                        }
                     </section>
                 })
             }
