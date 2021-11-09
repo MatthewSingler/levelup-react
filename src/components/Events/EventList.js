@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { getEvents } from "./EventManager"
+import { getEvents, joinEvent } from "./EventManager"
 import { useHistory } from "react-router"
 
 export const EventList = (props) => {
@@ -8,6 +8,14 @@ export const EventList = (props) => {
 
     useEffect(() => {
         getEvents().then(data => setEvents(data))
+    }, [])
+    const eventFetcher = () => {
+        getEvents()
+            .then(data => setEvents(data))
+    }
+
+    useEffect(() => {
+        eventFetcher()
     }, [])
 
     return (
@@ -25,6 +33,14 @@ export const EventList = (props) => {
                         <div className="event__time">at {event.time}</div>
                         <br>
                         </br>
+                        <button className="btn btn-2"
+                            onClick={
+                                () => {
+                                    joinEvent(event.id)
+                                        .then(() => eventFetcher())
+                                }
+                            }
+                        >Join</button>
                     </section>
                 })
             }
