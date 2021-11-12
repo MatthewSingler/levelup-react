@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useParams } from 'react-router-dom'
-import { createGame, getGame, getGameTypes } from './GameManager.js'
+import { createGame, getGame, getGameTypes, updateGameFetch } from './GameManager.js'
 
 
 export const GameForm = () => {
@@ -16,7 +16,7 @@ export const GameForm = () => {
     })
     /*get the game they are selecting. See if the parameters has a game id in it*/
     const { gameId } = useParams()
-    
+    const game =currentGame
     /*make a useEffect that is checking for changes to the game Id var*/
     useEffect(() => {
         if (gameId) {
@@ -38,12 +38,17 @@ export const GameForm = () => {
         copyGame[event.target.name] = event.target.value
         setCurrentGame(copyGame)
     }
-    /*const saveGame = (event) => {
-        event.preventDefault()
-        createGame(game).then(() => {
-            history.push('/')
+    const updateGame = (evt) => {
+        updateGameFetch(game).then(() => {
+            history.push('/games')
         })
-    }*/
+    }
+    const saveGame = (evt) => {
+        evt.preventDefault()
+        createGame(game).then(() => {
+            history.push("/games")
+        })
+    }
 
 
     /*
@@ -108,7 +113,11 @@ export const GameForm = () => {
             <button
                 onClick={evt => {
                     evt.preventDefault()
-
+                    if (gameId) {
+                        updateGame()
+                    } else {
+                        saveGame(evt)
+                    }
                     const game = {
                         maker: currentGame.maker,
                         title: currentGame.title,
@@ -116,11 +125,8 @@ export const GameForm = () => {
                         skillLevel: parseInt(currentGame.skillLevel),
                         gameTypeId: parseInt(currentGame.gameTypeId)
                     }
-
-                    createGame(game)
-                    .then(() => history.push("/"))
                 }}
-                className="btn btn-primary">Create</button>
+                className="btn btn-primary">{gameId ? 'Update' : 'Create'}</button>
         </>
     )
 }
