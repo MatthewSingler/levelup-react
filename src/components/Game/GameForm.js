@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { useHistory } from 'react-router-dom'
-import { createGame, getGameTypes } from './GameManager.js'
+import { useHistory, useParams } from 'react-router-dom'
+import { createGame, getGame, getGameTypes } from './GameManager.js'
 
 
 export const GameForm = () => {
@@ -14,6 +14,20 @@ export const GameForm = () => {
         maker: "",
         gameTypeId: 0
     })
+    /*get the game they are selecting. See if the parameters has a game id in it*/
+    const { gameId } = useParams()
+    
+    /*make a useEffect that is checking for changes to the game Id var*/
+    useEffect(() => {
+        if (gameId) {
+            getGame(gameId).then((gameData) => setCurrentGame({
+                ...gameData,
+                skillLevel: gameData.skill_level,
+                numberOfPlayers: gameData.number_of_players,
+                gameTypeId: gameData.game_type.id
+            }))
+        }
+    }, [gameId])
 
     useEffect(() => {
     getGameTypes().then(typesData => setGameTypes(typesData))
@@ -76,15 +90,15 @@ export const GameForm = () => {
     return (
         <> 
             <label>Title</label>
-            <input type="text" name="title" onChange={(event) => handleOnChange(event)}></input>
+            <input type="text" name="title" value={game.title}onChange={(event) => handleOnChange(event)}></input>
             <label>Maker</label>
-            <input type="text" name="maker" onChange={(event) => handleOnChange(event)}></input>
+            <input type="text" name="maker" value={game.maker} onChange={(event) => handleOnChange(event)}></input>
             <label>Number of Players</label>
-            <input type="number" name="numberOfPlayers" onChange={(event) => handleOnChange(event)}></input>
+            <input type="number" name="numberOfPlayers" value={game.numberOfPlayers} onChange={(event) => handleOnChange(event)}></input>
             <label>Skill Level</label>
-            <input type="number" name="skillLevel" onChange={(event) => handleOnChange(event)}></input>
+            <input type="number" name="skillLevel" value={game.skillLevel} onChange={(event) => handleOnChange(event)}></input>
             <label>Game Type</label>
-            <select name="gameTypeId" onChange={(event) => handleOnChange(event)}>
+            <select name="gameTypeId" value={game.gameTypeId} onChange={(event) => handleOnChange(event)}>
                 <option value="0">Select a game type</option>
                 {
                     gameTypes.map(type => <option value={type.id}>{type.label}</option>)

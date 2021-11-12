@@ -25,3 +25,12 @@ export const getGameTypes = () => {
     })
         .then(response => response.json())
 }
+
+export const getGame = (gameId) => {
+    return fetch(`http://localhost:8000/games/${gameId}`, {
+        headers: {
+            "Authorization": `Token ${localStorage.getItem("lu_token")}`
+        }
+    })
+        .then(response => response.json())
+}
